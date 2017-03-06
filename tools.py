@@ -16,21 +16,3 @@ def make_OHE(names):
     enc.fit(data)
     OHE_data = enc.transform(data).toarray()  
     return OHE_data
-
-def add_layer(inputs,in_size,out_size,activation_fun):
-    W = tf.Variable(tf.random_normal([in_size,out_size]))
-    b = tf.Variable(tf.zeros([1,out_size]) + 0.1)
-    W_b = tf.matmul(inputs,W) + b
-    if(activation_fun is None):
-        outputs = W_b
-    else:
-        outputs = activation_fun(W_b)
-    return outputs
-
-def compute_accuracy(v_xs,v_ys):
-    global pre
-    y_pre = sess.run(pre,feed_dict={xs:v_xs})   #得到 n行 10列 矩阵，每一列表示该结果的概率。
-    correct_pre = tf.equal(tf.argmax(y_pre,1),tf.argmax(v_ys,1))
-    accuracy = tf.reduce_mean(tf.cast(correct_pre,tf.float32))
-    result = sess.run(accuracy,feed_dict={xs:v_xs,ys:v_ys})
-    return result
