@@ -4,6 +4,8 @@ Created on Mon May 22 12:28:13 2017
 
 @author: Yangyang Deng
 @Email: yangydeng@163.com
+
+本文件为 《Tensorflow官方文档 v-1.2》中，构建一个多层神经网络案例，附注释。
 """
 
 import tensorflow as tf 
@@ -25,13 +27,18 @@ def bias_variable(shape):  #bias initial
     return tf.Variable(initial)
 
 def conv2d(x,W):  # convolution
-    return tf.nn.conv2d(x,W,strides=[1,1,1,1],padding="SAME")
+    return tf.nn.conv2d(x,W,strides=[1,1,1,1],padding="SAME")   #strides:移动调节，1.batch 2.height 3.width 4.channels
+    #strides=[1,1,1,1]: 每次卷积一个批次，高和宽的移动为一步，每次卷积一个频道（频道为RGB三色道，若为彩色：3，若为黑白：1）
+
 
 def max_pool_2x2(x): # pooling
-    return tf.nn.max_pool(x,ksize=[1,2,2,1],strides=[1,2,2,1],padding='SAME')
+    return tf.nn.max_pool(x,ksize=[1,2,2,1],strides=[1,2,2,1],padding='SAME')   #ksize:池化窗口设置 同上 strides
+    # ksize=[1,2,2,1] 每次池化一个批次，池化窗口2*2，每次池化一个频道
+    # 由于池化窗口的设置为2*2，所以池化窗口的移动也是 2,2
+
 
 # 第一层 卷积+池化
-W_conv1 = weight_variable([5,5,1,32])  # 卷积在5X5的patch中算出 32个特征。
+W_conv1 = weight_variable([5,5,1,32])  # 5*5的局部感受野，1个输入频道，32个输出频道（32个卷积核）
 b_conv1 = bias_variable([32])          # 
 x_image = tf.reshape(x,[-1,28,28,1])    # -1：为了把原来的向量铺平，28*28：图片的长宽，1:颜色通道 （RBG：3，黑白：1）
 
@@ -49,7 +56,7 @@ h_pool2 = max_pool_2x2(h_conv2)
 W_fcl = weight_variable([7*7*64,1024])
 b_fcl = bias_variable([1024])
 
-h_pool2_flat = tf.reshape(h_pool2,[-1,7*7*64])
+h_pool2_flat = tf.reshape(h_pool2,[-1,7*7*64]) #将第二个卷基层铺平
 h_fcl = tf.nn.relu(tf.matmul(h_pool2_flat,W_fcl)+b_fcl)
 
 # dropout
