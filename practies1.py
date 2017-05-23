@@ -34,12 +34,12 @@ pre = add_layer(xs,784,10,activation_fun=tf.nn.softmax) #输入层的激活函�
 #-------------------------
 cross_entropy = tf.reduce_mean(-tf.reduce_sum(ys*tf.log(pre),reduction_indices=[1]))  #输出层的激活函数为交叉熵 （交叉熵可以）
 
-train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+train_step = tf.train.GradientDescentOptimizer(0.003).minimize(cross_entropy)
 sess = tf.Session()
 
 sess.run(tf.global_variables_initializer())
 
-for i in range(1000):
+for i in range(100000):
     batch_xs,batch_ys = mnist.train.next_batch(100)
     sess.run(train_step,feed_dict={xs:batch_xs,ys:batch_ys})
     if(i%50==0):

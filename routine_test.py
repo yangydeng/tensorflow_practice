@@ -3,17 +3,13 @@
 Created on Sat Mar  4 20:02:17 2017
 
 @author: Administrator
+这是利用 梯度下降法预测 iris 的方法
 """
 import tensorflow as tf
 from sklearn.datasets import load_iris
 import sys
 sys.path.append('./')
 from tools import make_OHE
-import pandas as pd
-
-train_x = pd.read_csv('./csv/train_x_03_01_3.csv').values
-train_y = pd.read_csv('./csv/train_y_03_01_3.csv').ix[:,0].values
-
 
 def add_layer(inputs,in_size,out_size,activation_fun):
     W = tf.Variable(tf.random_normal([in_size,out_size],seed=1,stddev=0.01))
@@ -33,11 +29,10 @@ def compute_accuracy(v_xs,v_ys):
     result = sess.run(accuracy,feed_dict={xs:v_xs,ys:v_ys})
     return result
 
-#data = load_iris()
-#x_data = data.data
-#y_data = make_OHE(data.target)
-x_data = train_x
-y_data = train_y
+data = load_iris()
+x_data = data.data
+y_data = make_OHE(data.target)
+
 
 xs = tf.placeholder(tf.float32,[None,4])
 ys = tf.placeholder(tf.float32,[None,3])
@@ -59,4 +54,4 @@ for i in range(1000):
     if(i%50==0):
         #print(sess.run(loss,feed_dict={xs:x_data,ys:y_data.reshape(150,3)}))
         print(compute_accuracy(x_data,y_data))
-#sess.close()
+sess.close()
