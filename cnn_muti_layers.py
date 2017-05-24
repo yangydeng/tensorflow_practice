@@ -39,7 +39,7 @@ def max_pool_2x2(x): # pooling
 
 # 第一层 卷积+池化
 W_conv1 = weight_variable([5,5,1,32])  # 5*5的局部感受野，1个输入频道，32个输出频道（32个卷积核）
-b_conv1 = bias_variable([32])          # 
+b_conv1 = bias_variable([32])          
 x_image = tf.reshape(x,[-1,28,28,1])    # -1：为了把原来的向量铺平，28*28：图片的长宽，1:颜色通道 （RBG：3，黑白：1）
 
 h_conv1 = tf.nn.relu(conv2d(x_image,W_conv1)+b_conv1)    # x*W+b
@@ -53,7 +53,7 @@ h_conv2 = tf.nn.relu(conv2d(h_pool1,W_conv2)+b_conv2)
 h_pool2 = max_pool_2x2(h_conv2)
 
 # 第三层 全连层
-W_fcl = weight_variable([7*7*64,1024])
+W_fcl = weight_variable([7*7*64,1024])  #此时，照片的尺寸减小到7*7，（经过两次max_pooling,28*28 的长和宽经过两次除以2，所以变为7*7）
 b_fcl = bias_variable([1024])
 
 h_pool2_flat = tf.reshape(h_pool2,[-1,7*7*64]) #将第二个卷基层铺平
