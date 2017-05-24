@@ -52,7 +52,7 @@ b_conv2 = bias_variable([64])
 h_conv2 = tf.nn.relu(conv2d(h_pool1,W_conv2)+b_conv2)
 h_pool2 = max_pool_2x2(h_conv2)
 
-# 第三层 全连层
+# 第三层 全连层，输出为1024
 W_fcl = weight_variable([7*7*64,1024])  #此时，照片的尺寸减小到7*7，（经过两次max_pooling,28*28 的长和宽经过两次除以2，所以变为7*7）
 b_fcl = bias_variable([1024])
 
@@ -63,7 +63,7 @@ h_fcl = tf.nn.relu(tf.matmul(h_pool2_flat,W_fcl)+b_fcl)
 keep_prob = tf.placeholder(tf.float32) # keep_prob: 一个神经元的输出在dropout中保持不变的概率。
 h_fcl_drop = tf.nn.dropout(h_fcl,keep_prob) # dropout 
 
-# 输出层
+# 第四层，输出层softmax，输出层也是全连层，但是固定输出端口只能为10个，便于与真实结果匹配。
 W_fc2 = weight_variable([1024,10]) 
 b_fc2 = bias_variable([10])
 y_conv = tf.nn.softmax(tf.matmul(h_fcl_drop,W_fc2)+b_fc2) # 套上softmax
@@ -78,8 +78,8 @@ for i in range(20000):
     if i%100==0:
         train_accuracy = accuracy.eval(feed_dict={x:batch[0],y_:batch[1],keep_prob:1.0})
         print("step %d, training accuracy %g"%(i,train_accuracy))
-    train.run(feed_dict={x:batch[0],y_:batch[1],keep_prob:0.5})
+    train.run(feed_dict={x:batch[0],y_:batch[1],keep_prob:0.5}) #在训练时，dropout才生效
     
-print ("test accuracy %g"%accuracy.eval(feed_dict={x:mnist.test.images,y_:mnist.test.labels,keep_prob:1.0}))
+print ("test accuracy %g"%accuracy.eval(feed_dict={x:mnist.test.images,y_:mnist.test.labels,keep_prob:1.0})) #在实际工作中，dropout不生效。
 
 
