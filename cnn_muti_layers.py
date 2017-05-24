@@ -68,7 +68,7 @@ W_fc2 = weight_variable([1024,10])
 b_fc2 = bias_variable([10])
 y_conv = tf.nn.softmax(tf.matmul(h_fcl_drop,W_fc2)+b_fc2) # 套上softmax
 
-cross_entropy = -tf.reduce_sum(y_*tf.log(y_conv))
+cross_entropy = -tf.reduce_sum(y_*tf.log(y_conv)) #交叉熵代价函数
 train = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
 correct_pre = tf.equal(tf.argmax(y_conv,1),tf.argmax(y_,1))
 accuracy = tf.reduce_mean(tf.cast(correct_pre,tf.float32))
