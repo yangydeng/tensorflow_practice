@@ -9,7 +9,6 @@ Created on Mon May 22 12:28:13 2017
 """
 
 import tensorflow as tf 
-import numpy as np
 from tensorflow.contrib.learn.python.learn.datasets.mnist import read_data_sets
 
 mnist = read_data_sets("MNIST_data/",one_hot=True)
@@ -19,7 +18,7 @@ y_ = tf.placeholder(tf.float32,shape=[None,10])   # 保存图片真实的 label
 
 
 def weight_variable(shape): #weight initial
-    initial = tf.truncated_normal(shape,stddev=0.1)  
+    initial = tf.truncated_normal(shape,stddev=0.1,seed=1)  
     return tf.Variable(initial)
 
 def bias_variable(shape):  #bias initial
@@ -73,13 +72,16 @@ train = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
 correct_pre = tf.equal(tf.argmax(y_conv,1),tf.argmax(y_,1))
 accuracy = tf.reduce_mean(tf.cast(correct_pre,tf.float32))
 sess.run(tf.global_variables_initializer())
-for i in range(20000):
+for i in range(200):
     batch = mnist.train.next_batch(50)
     if i%100==0:
         train_accuracy = accuracy.eval(feed_dict={x:batch[0],y_:batch[1],keep_prob:1.0})
+        #print(batch[1][0])
         print("step %d, training accuracy %g"%(i,train_accuracy))
     train.run(feed_dict={x:batch[0],y_:batch[1],keep_prob:0.5}) #在训练时，dropout才生效
     
 print ("test accuracy %g"%accuracy.eval(feed_dict={x:mnist.test.images,y_:mnist.test.labels,keep_prob:1.0})) #在实际工作中，dropout不生效。
+
+sess.close()
 
 
